@@ -25,7 +25,7 @@
 
       <!-- Login Card -->
       <div class="bg-brand-charcoal border border-white/10 rounded-2xl p-6 shadow-2xl">
-        <form @submit.prevent="handleLogin" class="space-y-4">
+        <form @submit.prevent="handleLogin" autocomplete="off" class="space-y-4">
           <!-- Error Alert -->
           <div
             v-if="errorMessage"
@@ -47,8 +47,8 @@
               v-model="email"
               type="email"
               required
-              autocomplete="email"
-              placeholder="admin@teamjersey.local"
+              autocomplete="off"
+              placeholder="name@example.com"
               class="w-full h-11 px-3.5 text-xs sm:text-sm bg-[#222222] text-white placeholder-brand-dark-muted rounded-xl border border-white/10 focus:outline-none focus:border-brand-red focus:ring-1 focus:ring-brand-red transition-colors"
             />
           </div>
@@ -63,7 +63,7 @@
               v-model="password"
               type="password"
               required
-              autocomplete="current-password"
+              autocomplete="new-password"
               placeholder="••••••••"
               class="w-full h-11 px-3.5 text-xs sm:text-sm bg-[#222222] text-white placeholder-brand-dark-muted rounded-xl border border-white/10 focus:outline-none focus:border-brand-red focus:ring-1 focus:ring-brand-red transition-colors"
             />
@@ -82,13 +82,6 @@
             <span>{{ isLoading ? t('admin.signing_in') : t('admin.sign_in') }}</span>
           </button>
         </form>
-
-        <div class="mt-4 pt-3.5 border-t border-white/10 text-center">
-          <p class="text-[11px] text-brand-muted leading-relaxed">
-            Deployment credentials: <br />
-            <code class="text-brand-gold font-mono font-bold text-[11px]">admin@teamjersey.local</code> / <code class="text-brand-gold font-mono font-bold text-[11px]">admin12345</code>
-          </p>
-        </div>
       </div>
 
       <!-- Back to Public Site -->
@@ -118,8 +111,8 @@ const router = useRouter()
 const route = useRoute()
 const { t } = useI18n()
 
-const email = ref('admin@teamjersey.local')
-const password = ref('admin12345')
+const email = ref('')
+const password = ref('')
 const errorMessage = ref('')
 const isLoading = ref(false)
 
