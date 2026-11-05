@@ -7,7 +7,7 @@
     ></div>
 
     <!-- Subtle Team Emblem Watermark in Hero Header -->
-    <div class="absolute top-1 right-1 w-28 h-28 sm:w-32 sm:h-32 opacity-[0.12] pointer-events-none select-none">
+    <div class="absolute top-2 right-2 w-28 h-28 sm:w-32 sm:h-32 opacity-[0.14] pointer-events-none select-none">
       <img
         src="/images/bethel-logo.jpg"
         alt=""
@@ -15,8 +15,8 @@
       />
     </div>
 
-    <!-- Compact Team Tag with breathing room so the status bar comes down -->
-    <div class="relative z-10 pt-1 pb-6 sm:pb-8">
+    <!-- Compact Team Tag with ample room so the status bar comes down below the crest -->
+    <div class="relative z-10 pt-1.5 pb-20 sm:pb-24">
       <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-brand-charcoal border border-brand-gold/30 text-[10px] font-bold tracking-wider text-brand-gold uppercase shadow-xs">
         <span class="w-1.5 h-1.5 rounded-full bg-brand-red animate-pulse"></span>
         <span>{{ t('hero.tag') }}</span>
