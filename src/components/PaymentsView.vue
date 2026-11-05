@@ -110,7 +110,7 @@
       >
         <div class="flex items-center gap-2.5">
           <span class="w-7 h-7 rounded-lg bg-[#222222] border border-brand-gold/30 text-brand-gold flex items-center justify-center font-mono font-bold text-xs">
-            #{{ player.shirt_number ?? player.number }}
+            {{ formatJerseyNumber(player.shirt_number ?? player.number) !== '—' ? `#${formatJerseyNumber(player.shirt_number ?? player.number)}` : '—' }}
           </span>
           <div>
             <h4 class="text-xs font-bold text-white">{{ player.name }}</h4>
@@ -138,6 +138,7 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { formatJerseyNumber } from '../utils/formatters'
 
 const { t } = useI18n()
 

@@ -16,40 +16,114 @@
 
     <!-- Active Selected Player View -->
     <div v-if="selectedPlayer" class="space-y-3.5">
-      <!-- Premium Jersey Card Visual (Bethel High School Black & Gold Identity) -->
-      <div class="relative bg-gradient-to-b from-[#1c1c1c] to-[#121212] text-white rounded-2xl p-5 border border-brand-gold/40 shadow-card overflow-hidden text-center">
-        <!-- Subtle Background Glow & Watermark -->
-        <div class="absolute -top-10 -right-10 w-40 h-40 opacity-[0.08] pointer-events-none select-none">
+      <!-- Premium Jersey Showcase Card -->
+      <div class="relative bg-gradient-to-b from-[#1c1c1f] via-[#141416] to-[#0d0d0f] text-white rounded-2xl p-4 sm:p-5 border border-brand-gold/40 shadow-card overflow-hidden">
+        <!-- Subtle Background Glow & Crest Watermark -->
+        <div class="absolute -top-10 -right-10 w-44 h-44 opacity-[0.06] pointer-events-none select-none">
           <img src="/images/bethel-logo.jpg" alt="" class="w-full h-full object-contain filter grayscale contrast-125" />
         </div>
 
-        <!-- Top Row: Team Emblem & Season -->
-        <div class="flex items-center justify-between text-xs text-white/70 font-mono mb-4 relative z-10">
+        <!-- Top Row: Team Emblem & Kit Type Badge -->
+        <div class="flex items-center justify-between text-xs text-white/70 font-mono mb-3 relative z-10">
           <div class="flex items-center gap-2">
-            <div class="w-6 h-6 rounded-full overflow-hidden ring-1 ring-brand-gold/50 bg-black flex-shrink-0">
+            <div class="w-7 h-7 rounded-full overflow-hidden ring-1 ring-brand-gold/50 bg-black flex-shrink-0">
               <img src="/images/bethel-logo.jpg" alt="Bethel High School" class="w-full h-full object-contain" />
             </div>
-            <span class="font-bold tracking-wider text-white">BETHEL HIGH SCHOOL</span>
+            <div>
+              <span class="font-bold tracking-wider text-white text-[11px] sm:text-xs block leading-tight">BETHEL HIGH SCHOOL</span>
+              <span class="text-[9px] text-brand-muted tracking-widest uppercase">FC BETHEL SOUL</span>
+            </div>
           </div>
-          <span class="px-2 py-0.5 rounded-full bg-[#242424] border border-brand-gold/30 text-[10px] text-brand-gold font-bold">
-            {{ t('my_kit.official_kit') }}
+          <span
+            :class="[
+              'px-2 py-0.5 rounded-full text-[10px] font-bold border tracking-wider',
+              isGoalkeeper
+                ? 'bg-neutral-800 text-neutral-200 border-neutral-600'
+                : 'bg-brand-charcoal text-brand-gold border-brand-gold/30'
+            ]"
+          >
+            {{ isGoalkeeper ? t('my_kit.gk_kit') : t('my_kit.outfield_kit') }}
           </span>
         </div>
 
-        <!-- Jersey Graphic Display -->
-        <div class="relative z-10 my-3">
-          <!-- Big Athletic Number in Gold -->
-          <div class="font-mono font-black text-6xl sm:text-7xl text-brand-gold tracking-tight leading-none drop-shadow-md">
-            {{ formattedNumber }}
-          </div>
-          <!-- Player Name on Jersey Back -->
-          <div class="mt-2 text-lg sm:text-xl font-black text-white uppercase tracking-wider font-display">
-            {{ selectedPlayer.name }}
+        <!-- View Controls (Back vs Front Toggle) -->
+        <div class="flex items-center justify-center relative z-10 my-2">
+          <div class="inline-flex p-1 rounded-xl bg-black/60 border border-white/10 backdrop-blur-sm shadow-inner">
+            <button
+              type="button"
+              @click="activeJerseyView = 'back'"
+              :class="[
+                'px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer',
+                activeJerseyView === 'back'
+                  ? 'bg-brand-gold text-black shadow-sm font-black'
+                  : 'text-brand-muted hover:text-white'
+              ]"
+            >
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+              </svg>
+              {{ t('my_kit.back_view') }}
+            </button>
+            <button
+              type="button"
+              @click="activeJerseyView = 'front'"
+              :class="[
+                'px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer',
+                activeJerseyView === 'front'
+                  ? 'bg-brand-gold text-black shadow-sm font-black'
+                  : 'text-brand-muted hover:text-white'
+              ]"
+            >
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+              </svg>
+              {{ t('my_kit.front_view') }}
+            </button>
           </div>
         </div>
 
-        <!-- Status Details -->
-        <div class="mt-5 pt-3.5 border-t border-white/10 flex items-center justify-around text-xs relative z-10 font-mono">
+        <!-- Realistic Football Jersey Display -->
+        <div class="relative z-10 my-3 py-1">
+          <TeamJersey
+            :number="selectedPlayer.shirt_number ?? selectedPlayer.number"
+            :name="selectedPlayer.name"
+            :view="activeJerseyView"
+            :is-gk="isGoalkeeper"
+          />
+        </div>
+
+        <!-- Design Sheet Toggle Link -->
+        <div class="text-center relative z-10 pt-1">
+          <button
+            type="button"
+            @click="showDesignSheet = !showDesignSheet"
+            class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-[11px] font-semibold text-brand-muted hover:text-white transition-colors cursor-pointer"
+          >
+            <svg class="w-3.5 h-3.5 text-brand-gold" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+              <circle cx="8.5" cy="8.5" r="1.5"></circle>
+              <polyline points="21 15 16 10 5 21"></polyline>
+            </svg>
+            <span>{{ showDesignSheet ? t('my_kit.hide_sheet') : t('my_kit.view_sheet') }}</span>
+          </button>
+
+          <!-- Expandable Design Sheet Preview -->
+          <div v-if="showDesignSheet" class="mt-3 p-2 rounded-xl bg-black/80 border border-brand-gold/30 text-left">
+            <img
+              src="/images/team-jersey-reference.jpg"
+              alt="Official Bethel High School Jersey Design Reference"
+              class="w-full h-auto rounded-lg object-contain max-h-[440px] mx-auto border border-white/10"
+              loading="lazy"
+            />
+            <p class="text-[10px] text-brand-muted text-center mt-2 font-mono">
+              Bethel High School Official Kit Production Sheet · DE Sport AL5582
+            </p>
+          </div>
+        </div>
+
+        <!-- Status & Sizing Details Row -->
+        <div class="mt-4 pt-3.5 border-t border-white/10 flex items-center justify-around text-xs relative z-10 font-mono">
           <div>
             <span class="block text-[10px] text-brand-muted uppercase tracking-wider font-sans">{{ t('my_kit.kit_size') }}</span>
             <span class="font-bold text-white text-base">{{ selectedPlayer.jersey_size || selectedPlayer.size }}</span>
@@ -74,7 +148,7 @@
           <div v-if="selectedPlayer.notes">
             <span class="block text-[10px] text-brand-muted uppercase tracking-wider font-sans">{{ t('my_kit.role') }}</span>
             <span class="font-bold text-white text-xs mt-0.5 block">
-              {{ selectedPlayer.notes === 'GK' ? t('player.gk') : selectedPlayer.notes }}
+              {{ isGoalkeeper ? t('player.gk') : selectedPlayer.notes }}
             </span>
           </div>
         </div>
@@ -88,7 +162,7 @@
           <span>{{ t('my_kit.note_title') }}</span>
         </h4>
         <p v-if="isPaid" class="text-brand-muted leading-relaxed">
-          {{ t('my_kit.paid_msg', { size: selectedPlayer.jersey_size || selectedPlayer.size, number: selectedPlayer.shirt_number ?? selectedPlayer.number }) }}
+          {{ t('my_kit.paid_msg', { size: selectedPlayer.jersey_size || selectedPlayer.size, number: formatJerseyNumber(selectedPlayer.shirt_number ?? selectedPlayer.number) }) }}
         </p>
         <p v-else-if="isUnpaid" class="text-brand-muted leading-relaxed">
           {{ t('my_kit.unpaid_msg') }}
@@ -145,14 +219,20 @@
           class="w-full bg-brand-charcoal hover:bg-brand-charcoal-light border border-white/10 hover:border-brand-gold/30 rounded-xl px-3 py-2 flex items-center justify-between text-left transition-colors shadow-xs cursor-pointer"
         >
           <div class="flex items-center gap-2.5">
-            <span class="font-mono font-bold text-brand-gold text-xs w-6">
-              #{{ player.shirt_number ?? player.number }}
+            <span class="font-mono font-bold text-brand-gold text-xs min-w-[28px]">
+              {{ formatJerseyNumber(player.shirt_number ?? player.number) !== '—' ? `#${formatJerseyNumber(player.shirt_number ?? player.number)}` : '—' }}
             </span>
             <span class="text-xs font-bold text-white">
               {{ player.name }}
             </span>
             <span class="text-[10px] text-brand-muted">
               ({{ t('player.jersey_size') }} {{ player.jersey_size || player.size }})
+            </span>
+            <span
+              v-if="player.notes === 'GK'"
+              class="text-[9px] px-1 py-0.2 rounded bg-brand-gold/20 text-brand-gold font-bold font-mono"
+            >
+              GK
             </span>
           </div>
 
@@ -177,6 +257,8 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
+import TeamJersey from './TeamJersey.vue'
+import { formatJerseyNumber } from '../utils/formatters'
 
 const { t } = useI18n()
 
@@ -189,8 +271,20 @@ const props = defineProps({
 
 const selectedPlayerId = ref(null)
 const searchQuery = ref('')
+const initialView = new URLSearchParams(window.location.search).get('view')
+const activeJerseyView = ref(initialView && ['back', 'front'].includes(initialView) ? initialView : 'back') // 'back' | 'front'
+const showDesignSheet = ref(false)
 
 onMounted(() => {
+  const urlPlayer = new URLSearchParams(window.location.search).get('player')
+  if (urlPlayer) {
+    const numId = Number(urlPlayer)
+    if (!isNaN(numId)) {
+      selectedPlayerId.value = numId
+      localStorage.setItem('my_kit_player_id', String(numId))
+      return
+    }
+  }
   const saved = localStorage.getItem('my_kit_player_id')
   if (saved) {
     selectedPlayerId.value = Number(saved)
@@ -212,10 +306,9 @@ const selectedPlayer = computed(() => {
   return props.players.find((p) => (p.id || p.no) === selectedPlayerId.value) || null
 })
 
-const formattedNumber = computed(() => {
-  if (!selectedPlayer.value) return ''
-  const num = selectedPlayer.value.shirt_number ?? selectedPlayer.value.number
-  return num < 10 ? `0${num}` : String(num)
+// Reliable Goalkeeper Detection (strictly when notes === 'GK')
+const isGoalkeeper = computed(() => {
+  return selectedPlayer.value?.notes?.trim().toUpperCase() === 'GK'
 })
 
 const isPaid = computed(() => {
@@ -253,10 +346,11 @@ const normalizeStatusLabel = (player) => {
 const filteredPlayers = computed(() => {
   const q = searchQuery.value.trim().toLowerCase()
   if (!q) return props.players
-  return props.players.filter(
-    (p) =>
-      p.name.toLowerCase().includes(q) ||
-      String(p.shirt_number ?? p.number).includes(q)
-  )
+  return props.players.filter((p) => {
+    const nameMatch = p.name.toLowerCase().includes(q)
+    const numStr = formatJerseyNumber(p.shirt_number ?? p.number)
+    const numMatch = numStr !== '—' && numStr.includes(q)
+    return nameMatch || numMatch
+  })
 })
 </script>

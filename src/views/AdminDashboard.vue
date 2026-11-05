@@ -226,7 +226,7 @@
                 <!-- Number -->
                 <td class="py-3.5 px-4 font-mono font-bold text-sm">
                   <div class="w-8 h-8 rounded-lg bg-[#222222] border border-brand-gold/30 text-brand-gold flex items-center justify-center font-bold">
-                    #{{ player.shirt_number ?? player.number }}
+                    {{ formatJerseyNumber(player.shirt_number ?? player.number) !== '—' ? `#${formatJerseyNumber(player.shirt_number ?? player.number)}` : '—' }}
                   </div>
                 </td>
 
@@ -442,7 +442,7 @@
           </svg>
         </div>
         <h3 class="text-sm font-bold text-white mb-1">
-          {{ t('admin.delete_confirm_title', { number: deletingPlayer.shirt_number ?? deletingPlayer.number, name: deletingPlayer.name }) }}
+          {{ t('admin.delete_confirm_title', { number: formatJerseyNumber(deletingPlayer.shirt_number ?? deletingPlayer.number), name: deletingPlayer.name }) }}
         </h3>
         <p class="text-xs text-brand-muted leading-relaxed mb-4">
           {{ t('admin.delete_confirm_desc') }}
@@ -485,6 +485,7 @@ import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { api, removeAdminToken } from '../services/api'
 import LanguageSwitcher from '../components/LanguageSwitcher.vue'
+import { formatJerseyNumber } from '../utils/formatters'
 
 const router = useRouter()
 const { t } = useI18n()
@@ -603,8 +604,8 @@ const filteredPlayers = computed(() => {
 
     if (query) {
       const matchName = player.name.toLowerCase().includes(query)
-      const num = player.shirt_number ?? player.number
-      const matchNum = String(num).includes(query)
+      const numStr = formatJerseyNumber(player.shirt_number ?? player.number)
+      const matchNum = numStr !== '—' && numStr.includes(query)
       const matchNotes = player.notes ? player.notes.toLowerCase().includes(query) : false
       if (!matchName && !matchNum && !matchNotes) return false
     }

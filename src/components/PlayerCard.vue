@@ -3,12 +3,14 @@
     class="bg-brand-charcoal hover:bg-brand-charcoal-light border border-white/10 hover:border-brand-gold/30 rounded-xl px-3 py-2.5 transition-all shadow-card flex items-center justify-between gap-2.5 select-none"
     :aria-label="`Player ${player.name}, Number ${formattedNumber}, Size ${player.jersey_size || player.size}, Status ${statusConfig.label}`"
   >
-    <!-- Left: Number Container + Info -->
+    <!-- Left: Jersey Silhouette + Info -->
     <div class="flex items-center gap-2.5 min-w-0">
-      <!-- Shirt Number Container (Charcoal Squircle with Gold Accent) -->
-      <div class="w-9 h-9 rounded-lg bg-[#202020] border border-brand-gold/40 text-brand-gold flex items-center justify-center font-mono font-bold text-sm tracking-tight flex-shrink-0 shadow-sm">
-        {{ formattedNumber }}
-      </div>
+      <!-- Player Jersey Display (Football shirt with number on back) -->
+      <TeamJersey
+        :number="player.shirt_number ?? player.number"
+        :is-gk="isGoalkeeper"
+        compact
+      />
 
       <!-- Player Name & Size Info -->
       <div class="min-w-0">
@@ -25,7 +27,7 @@
           <template v-if="player.notes">
             <span class="text-white/20">•</span>
             <span
-              v-if="player.notes === 'GK'"
+              v-if="isGoalkeeper"
               class="inline-flex items-center px-1.5 py-0.2 rounded bg-brand-gold/15 text-brand-gold border border-brand-gold/30 text-[10px] font-bold tracking-wider font-mono"
             >
               {{ t('player.gk') }}
@@ -60,6 +62,8 @@
 <script setup>
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
+import TeamJersey from './TeamJersey.vue'
+import { formatJerseyNumber } from '../utils/formatters'
 
 const { t } = useI18n()
 
@@ -70,13 +74,15 @@ const props = defineProps({
   }
 })
 
-// Format number with leading zero for single digits (e.g. 8 -> '08', 0 -> '00')
+// Goalkeeper detection: only true when notes is explicitly 'GK'
+const isGoalkeeper = computed(() => {
+  return props.player.notes?.trim().toUpperCase() === 'GK'
+})
+
+// Consistent jersey number display formatting:
+// 0 -> '0', 1 -> '1', 7 -> '7', 10 -> '10', null/undefined/'' -> '—'
 const formattedNumber = computed(() => {
-  const num = props.player.shirt_number ?? props.player.number
-  if (typeof num === 'number' && num < 10) {
-    return `0${num}`
-  }
-  return String(num ?? '')
+  return formatJerseyNumber(props.player.shirt_number ?? props.player.number)
 })
 
 const statusConfig = computed(() => {

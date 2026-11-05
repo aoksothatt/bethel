@@ -100,9 +100,11 @@ import PlayerList from '../components/PlayerList.vue'
 import BottomNav from '../components/BottomNav.vue'
 import MyKitView from '../components/MyKitView.vue'
 import PaymentsView from '../components/PaymentsView.vue'
+import { formatJerseyNumber } from '../utils/formatters'
 
 // Active tab in bottom navigation ('squad' | 'my-kit' | 'payments')
-const currentTab = ref('squad')
+const initialTab = new URLSearchParams(window.location.search).get('tab')
+const currentTab = ref(initialTab && ['squad', 'my-kit', 'payments'].includes(initialTab) ? initialTab : 'squad')
 
 // Search & Filter state
 const searchQuery = ref('')
@@ -208,9 +210,8 @@ const filteredPlayers = computed(() => {
     // 2. Search query match
     if (query) {
       const matchName = player.name.toLowerCase().includes(query)
-      const num = player.shirt_number ?? player.number
-      const formattedNum = num < 10 ? `0${num}` : String(num)
-      const matchNumber = String(num).includes(query) || formattedNum.includes(query)
+      const numStr = formatJerseyNumber(player.shirt_number ?? player.number)
+      const matchNumber = numStr !== '—' && numStr.includes(query)
       const matchNotes = player.notes ? player.notes.toLowerCase().includes(query) : false
       const size = (player.jersey_size || player.size || '').toLowerCase()
       const matchSize = size === query
