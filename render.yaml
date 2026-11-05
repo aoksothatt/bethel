@@ -16,21 +16,29 @@ services:
         value: production
       - key: APP_DEBUG
         value: "false"
+      - key: APP_URL
+        value: "https://bethel-fm51.onrender.com"
       - key: APP_KEY
-        generateValue: true
+        sync: false # Set in Render dashboard (preserve existing key)
+      - key: LOG_CHANNEL
+        value: stderr
+      - key: SESSION_DRIVER
+        value: cookie
+      - key: CACHE_STORE
+        value: file
       - key: DB_CONNECTION
         value: mysql
       - key: DB_HOST
-        sync: false # Set in Render dashboard (e.g. gateway01.ap-southeast-1.prod.aws.tidbcloud.com)
+        value: gateway01.ap-southeast-1.prod.aws.tidbcloud.com
       - key: DB_PORT
         value: "4000"
       - key: DB_DATABASE
-        sync: false # Set in Render dashboard (e.g. test)
+        value: test
       - key: DB_USERNAME
-        sync: false # Set in Render dashboard
+        value: 4GwwkAqZVDHJ3ch.root
       - key: DB_PASSWORD
-        sync: false # Set in Render dashboard
+        sync: false # Set securely in Render dashboard
       - key: MYSQL_ATTR_SSL_CA
         value: /etc/ssl/certs/ca-certificates.crt
       - key: CORS_ALLOWED_ORIGINS
-        value: "*"
+        value: "https://bethel-fm51.onrender.com,http://localhost:5173,http://127.0.0.1:5173"
