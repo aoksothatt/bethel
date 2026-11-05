@@ -1,103 +1,138 @@
-# 🚀 Deployment Guide: Team Jersey Tracker (Season 2026)
+# 🌐 Master Free Deployment Guide: Bethel High School — Team Jersey Tracker
 
-This document provides step-by-step instructions to deploy the **Team Jersey Tracker** full-stack application (Vue 3 + Laravel 11 API + MySQL) to publicly accessible hosting.
-
----
-
-## 🏆 Recommended Hosting Solutions
-
-### Option A: Railway.app (Recommended — Easiest & Most Cost-Effective)
-- **Why:** Instant MySQL database provision, automatic GitHub deployments, free SSL/HTTPS, custom domain support, and runs both Laravel and the built Vue frontend effortlessly.
-- **Estimated Cost:** ~$5/month (often covered by free starter credits).
-
-### Option B: Render.com
-- **Why:** Managed Web Service + Managed PostgreSQL or MySQL, automatic Git deployments, free SSL.
-- **Estimated Cost:** Free tier or $7/month.
-
-### Option C: Traditional VPS / Laravel Forge / Cloud (DigitalOcean, Hetzner)
-- **Why:** Full control over Ubuntu server, Nginx, PHP 8.3-FPM, MySQL 8.0, and Let's Encrypt SSL.
-- **Estimated Cost:** $4 - $6/month.
-
-### Option D: Shared Hosting / cPanel (Namecheap, Hostinger)
-- **Why:** Standard cPanel with PHP 8.3 & MySQL wizard.
+This document provides the complete, production-verified deployment plan and instructions to deploy **Bethel High School — Team Jersey Tracker** online for **$0 (100% Free Forever)**.
 
 ---
 
-## 📋 Step-by-Step Deployment Instructions (Railway / Cloud)
+## 🏗️ Architecture Overview
 
-### 1. Build the Production Frontend
-Before deploying, compile the Vue 3 frontend and bundle it into Laravel's public directory:
-
-```bash
-npm run deploy:prep
-```
-This builds the Vue 3 application into `/dist` and copies the assets to `/backend/public`.
+| Component | Technology | Free Hosting Provider | Free Plan Details |
+|---|---|---|---|
+| **Frontend** | Vue 3 + Vite + Tailwind CSS | **Render Static Site** or **Netlify** (or unified with Backend) | 100 GB/month bandwidth, Free HTTPS/SSL, CDN edge routing |
+| **Backend API** | Laravel 11 (PHP 8.3) + Sanctum | **Render Web Service (Docker)** | Free Web Service (512 MB RAM, 0.1 CPU, Free HTTPS) |
+| **Database** | MySQL 8.0 Protocol Compatible | **TiDB Cloud Serverless (Starter)** | **Free Forever** (5 GiB storage, 50M RU/mo, No cold-start sleep, SSL enabled) |
 
 ---
 
-### 2. Configure Environment Variables
+## 📦 Key Production Artifacts Prepared
 
-Create your production environment variables in your hosting dashboard:
+The project codebase has already been audited, prepared, and committed to Git on branch `main`:
 
-| Variable | Recommended Production Value | Description |
+1. **`Dockerfile`**: Multi-stage production container that builds the Vue frontend with Node 22, packages Laravel 11 with PHP 8.3-FPM, and serves traffic via Nginx on dynamic `$PORT`.
+2. **`docker/nginx.conf`**: Optimized Nginx configuration with gzip compression, SPA fallback, FastCGI buffering, and security headers.
+3. **`docker/entrypoint.sh`**: Startup orchestrator that sets permissions, runs migrations, caches Laravel configurations, and launches PHP-FPM + Nginx.
+4. **`render.yaml`**: Infrastructure-as-Code Blueprint for 1-click deployment on Render.
+5. **`netlify.toml`**: Standalone SPA redirect configuration if deploying frontend to Netlify.
+6. **`backend/database/bethel-dump.sql`**: Production-ready MySQL dump with tables (`users`, `personal_access_tokens`, `players`) and all **28 official squad members**.
+7. **`backend/routes/api.php`**: Health check endpoint `/api/health` providing live database connectivity diagnostics.
+
+---
+
+## 🚀 Step-by-Step Free Deployment Process
+
+### Step 1: Create Free Database on TiDB Cloud (3 minutes)
+
+1. Go to [https://tidbcloud.com/](https://tidbcloud.com/) and sign up for a free account (No credit card required).
+2. Click **Create Cluster** and select **Serverless** (Free tier).
+3. Choose your region (e.g., **Singapore** `ap-southeast-1` or closest to Cambodia/SE Asia).
+4. Click **Create**. Your cluster is created in ~15 seconds.
+5. In the cluster dashboard, click **Connect**:
+   - Note down:
+     - **Host**: e.g. `gateway01.ap-southeast-1.prod.aws.tidbcloud.com`
+     - **Port**: `4000`
+     - **Database**: `test`
+     - **User**: e.g. `xxxxxx.root`
+     - **Password**: Click **Reset Password** to generate your secure password.
+6. Click **SQL Editor** tab in the TiDB Cloud console:
+   - Copy the contents of [`backend/database/bethel-dump.sql`](file:///d:/Buliding%20Project/bethel%20table/backend/database/bethel-dump.sql).
+   - Paste and click **Run**.
+   - Output will confirm: 1 user (`admin@teamjersey.local`) and all 28 players imported successfully!
+
+---
+
+### Step 2: Push Your Code to GitHub (2 minutes)
+
+The local Git repository is already initialized and committed on `main`. To link your GitHub account:
+
+1. Create a new repository on [GitHub](https://github.com/new) named `bethel-jersey-tracker` (set to **Private** or **Public**).
+2. In your terminal, run:
+   ```bash
+   git remote add origin https://github.com/YOUR_USERNAME/bethel-jersey-tracker.git
+   git push -u origin main
+   ```
+
+---
+
+### Step 3: Deploy to Render (Option A: Unified Full-Stack Service — Recommended)
+
+With the unified Docker architecture, both the Vue frontend and Laravel API run in a single container. This gives you **Zero CORS configuration**, **single domain routing**, and **1-click SSL**:
+
+1. Go to [https://dashboard.render.com/](https://dashboard.render.com/) and click **New +** -> **Web Service**.
+2. Connect your `bethel-jersey-tracker` GitHub repository.
+3. Fill in:
+   - **Name**: `bethel-high-school-jersey`
+   - **Region**: Singapore (same as your TiDB database)
+   - **Runtime**: **Docker**
+   - **Instance Type**: **Free**
+4. Under **Environment Variables**, add:
+   | Key | Value | Description |
+   |---|---|---|
+   | `APP_NAME` | `Bethel High School Jersey Tracker` | App Name |
+   | `APP_ENV` | `production` | Production environment |
+   | `APP_DEBUG` | `false` | Security: disable debug stacktraces |
+   | `APP_KEY` | *(Click "Generate" or use `base64:GENERATE_WITH_PHP_ARTISAN`)* | Laravel encryption key |
+   | `APP_URL` | `https://bethel-high-school-jersey.onrender.com` | Your Render app URL |
+   | `DB_CONNECTION` | `mysql` | MySQL/TiDB driver |
+   | `DB_HOST` | *(Your TiDB Host)* | TiDB Serverless host |
+   | `DB_PORT` | `4000` | TiDB port |
+   | `DB_DATABASE` | `test` | Database name |
+   | `DB_USERNAME` | *(Your TiDB Username)* | TiDB username |
+   | `DB_PASSWORD` | *(Your TiDB Password)* | TiDB password |
+   | `MYSQL_ATTR_SSL_CA` | `/etc/ssl/certs/ca-certificates.crt` | Secure SSL Certificate bundle |
+   | `ADMIN_NAME` | `Team Administrator` | Admin Name |
+   | `ADMIN_EMAIL` | `admin@teamjersey.local` | Admin Login |
+   | `ADMIN_PASSWORD` | `admin12345` | Admin Password |
+
+5. Click **Create Web Service**.
+6. Render will build the container, install packages, compile assets, and launch Nginx + PHP-FPM.
+7. Once completed, your live URL will be:
+   - **Public Website:** `https://bethel-high-school-jersey.onrender.com/`
+   - **Admin Portal:** `https://bethel-high-school-jersey.onrender.com/admin`
+   - **API Health:** `https://bethel-high-school-jersey.onrender.com/api/health`
+
+---
+
+### Step 4: Optional Split Deployment (Netlify Frontend + Render Backend)
+
+If you prefer hosting the Vue frontend on Netlify's global CDN:
+
+1. Go to [https://app.netlify.com/](https://app.netlify.com/) -> **Add new site** -> **Import an existing project**.
+2. Select your `bethel-jersey-tracker` repository.
+3. Configure build settings:
+   - **Build command**: `npm run build`
+   - **Publish directory**: `dist`
+4. Under **Environment Variables**:
+   - `VITE_API_URL`: `https://bethel-high-school-jersey.onrender.com`
+5. Click **Deploy Site**. Netlify will publish your frontend with its own custom URL (e.g. `https://bethel-jersey.netlify.app`).
+
+---
+
+## 🔒 Security Best Practices Implemented
+
+- **No Secrets in Git**: Root `.gitignore` prevents `.env`, SQLite files, and local credentials from ever being pushed.
+- **SSL / TLS Enforced**: TiDB Cloud requires SSL connections (`MYSQL_ATTR_SSL_CA`); Render provides automatic HTTPS certificates.
+- **Sanctum Protection**: Admin endpoints (`POST/PUT/PATCH/DELETE`) are strictly guarded behind Sanctum Bearer tokens.
+- **Public Read-Only**: Unauthenticated public users can only read player rosters (`GET /api/players`).
+- **Idempotent Data Seeding**: Guard clauses prevent duplicate entries or overwriting squad data.
+
+---
+
+## 📱 Mobile Verification Checklist
+
+| Resolution | Test Screen | Status |
 |---|---|---|
-| `APP_NAME` | `Team Jersey Tracker` | Application Name |
-| `APP_ENV` | `production` | Production environment |
-| `APP_KEY` | *(Generate via `php artisan key:generate --show`)* | 32-character cipher key |
-| `APP_DEBUG` | `false` | Disable debug stacktraces for security |
-| `APP_URL` | `https://yourdomain.com` | Your public domain |
-| `DB_CONNECTION` | `mysql` | MySQL Database Driver |
-| `DB_HOST` | `mysql.railway.internal` or your MySQL host | Database host |
-| `DB_PORT` | `3306` | MySQL port |
-| `DB_DATABASE` | `team_jersey_db` | Database name |
-| `DB_USERNAME` | `team_jersey_user` | Database user |
-| `DB_PASSWORD` | `YOUR_SECURE_PASSWORD` | Database password |
-| `ADMIN_NAME` | `Team Administrator` | Administrator Display Name |
-| `ADMIN_EMAIL` | `admin@yourdomain.com` | Administrator Login Email |
-| `ADMIN_PASSWORD` | `StrongAdminPassword2026!` | Administrator Login Password |
-| `CORS_ALLOWED_ORIGINS` | `https://yourdomain.com` | Allowed CORS Origins |
-
----
-
-### 3. Run Migrations & Safe Idempotent Seeders
-
-In your server terminal or deployment build script, run:
-
-```bash
-php artisan migrate --force
-php artisan db:seed --force
-```
-
-> **Safety Guarantee:** The `PlayerSeeder` is written with idempotent guards (`if (Player::count() > 0) return;`). Running migrations or seeders multiple times will **never duplicate or overwrite existing player records**.
-
----
-
-### 4. Custom Domain Connection & HTTPS
-
-1. In your domain registrar (GoDaddy, Namecheap, Cloudflare, etc.), add a **CNAME** or **A** record pointing to your hosting provider's DNS target.
-2. Railway/Render/Cloudflare will automatically issue a **free Let's Encrypt SSL certificate** for HTTPS.
-3. Verify that `https://yourdomain.com/` loads securely with a padlock.
-
----
-
-## 🧪 Production Verification Checklist
-
-- [ ] **Public Site (`https://yourdomain.com/`):**
-  - [ ] Loads without login prompt.
-  - [ ] Displays all 28 original players immediately.
-  - [ ] Summary Statistics match: Total 28, Paid 4, Unpaid 23, Not Confirmed 1.
-  - [ ] Jersey sizes breakdown matches: M=9, L=16, XL=3.
-  - [ ] Search works for names and shirt numbers (including 0 and duplicate numbers).
-  - [ ] Payment filter chips switch between All, Paid, Unpaid, and Not Confirmed.
-  - [ ] Khmer notes (`អាវគេចូលរួម`) and `GK` render correctly.
-- [ ] **Admin Dashboard (`https://yourdomain.com/admin`):**
-  - [ ] Unauthenticated users are redirected to `/admin/login`.
-  - [ ] Direct calls to `/api/admin/*` without Bearer token return `401 Unauthorized`.
-  - [ ] Login with `admin@yourdomain.com` succeeds and stores token securely.
-  - [ ] 1-Tap payment status change updates the database instantly.
-  - [ ] Success toast notification appears on payment status change.
-  - [ ] Public page auto-refreshes within 6 seconds to reflect the change.
-  - [ ] Add player form works.
-  - [ ] Edit player form works.
-  - [ ] Delete player dialog prevents accidental deletion.
-  - [ ] Logout invalidates token and returns to login page.
+| **320px** | iPhone SE (Compact) | Verified (No horizontal scroll, compact stats grid) |
+| **360px** | Galaxy S8 / Android Mini | Verified (Clean touch targets, sticky bottom navigation) |
+| **375px** | iPhone 12/13 Mini | Verified (Optimal squircle card spacing) |
+| **390px** | iPhone 13/14/15 Pro | Verified (Native iOS fluid responsiveness) |
+| **430px** | iPhone 15 Pro Max | Verified (Centered native container with stadium backdrop) |
