@@ -17,6 +17,7 @@ class PlayerController extends Controller
         $players = Player::all();
         $total = $players->count();
         $paid = $players->where('payment_status', 'paid')->count();
+        $halfPaid = $players->where('payment_status', 'half_paid')->count();
         $unpaid = $players->where('payment_status', 'unpaid')->count();
         $notConfirmed = $players->where('payment_status', 'not_confirmed')->count();
 
@@ -29,6 +30,8 @@ class PlayerController extends Controller
         return [
             'total' => $total,
             'paid' => $paid,
+            'half_paid' => $halfPaid,
+            'halfPaid' => $halfPaid,
             'unpaid' => $unpaid,
             'not_confirmed' => $notConfirmed,
             'notConfirmed' => $notConfirmed,
@@ -43,6 +46,7 @@ class PlayerController extends Controller
     {
         $statusLabels = [
             'paid' => 'Paid',
+            'half_paid' => '50% Paid',
             'unpaid' => 'Unpaid',
             'not_confirmed' => 'Not Confirmed',
         ];
@@ -85,7 +89,7 @@ class PlayerController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'shirt_number' => ['required', 'integer', 'min:0', 'max:999'],
             'jersey_size' => ['required', Rule::in(['M', 'L', 'XL'])],
-            'payment_status' => ['required', Rule::in(['paid', 'unpaid', 'not_confirmed', 'Paid', 'Unpaid', 'Not Confirmed'])],
+            'payment_status' => ['required', Rule::in(['paid', 'half_paid', 'unpaid', 'not_confirmed', 'Paid', '50% Paid', '50%_paid', 'half_paid', 'Unpaid', 'Not Confirmed'])],
             'notes' => ['nullable', 'string', 'max:1000'],
         ]);
 
@@ -121,7 +125,7 @@ class PlayerController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'shirt_number' => ['required', 'integer', 'min:0', 'max:999'],
             'jersey_size' => ['required', Rule::in(['M', 'L', 'XL'])],
-            'payment_status' => ['required', Rule::in(['paid', 'unpaid', 'not_confirmed', 'Paid', 'Unpaid', 'Not Confirmed'])],
+            'payment_status' => ['required', Rule::in(['paid', 'half_paid', 'unpaid', 'not_confirmed', 'Paid', '50% Paid', '50%_paid', 'half_paid', 'Unpaid', 'Not Confirmed'])],
             'notes' => ['nullable', 'string', 'max:1000'],
         ]);
 
@@ -142,7 +146,7 @@ class PlayerController extends Controller
         $player = Player::findOrFail($id);
 
         $validated = $request->validate([
-            'payment_status' => ['required', Rule::in(['paid', 'unpaid', 'not_confirmed', 'Paid', 'Unpaid', 'Not Confirmed'])],
+            'payment_status' => ['required', Rule::in(['paid', 'half_paid', 'unpaid', 'not_confirmed', 'Paid', '50% Paid', '50%_paid', 'half_paid', 'Unpaid', 'Not Confirmed'])],
         ]);
 
         $player->update([

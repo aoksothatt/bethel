@@ -87,14 +87,22 @@ const formattedNumber = computed(() => {
 
 const statusConfig = computed(() => {
   const s = props.player.payment_status || props.player.status
-  const normalized = String(s).toLowerCase().replace(' ', '_')
+  const normalized = String(s).toLowerCase().replace(/[\s%]+/g, '_')
 
   switch (normalized) {
     case 'paid':
       return {
         label: t('filters.paid'),
-        badgeClass: 'bg-brand-gold/15 text-brand-gold border-brand-gold/40',
-        dotClass: 'bg-brand-gold'
+        badgeClass: 'bg-emerald-500/15 text-emerald-400 border-emerald-500/40',
+        dotClass: 'bg-emerald-400'
+      }
+    case 'half_paid':
+    case '50_paid':
+    case '50_percent_paid':
+      return {
+        label: t('filters.half_paid'),
+        badgeClass: 'bg-amber-500/15 text-amber-400 border-amber-500/40',
+        dotClass: 'bg-amber-400'
       }
     case 'unpaid':
       return {

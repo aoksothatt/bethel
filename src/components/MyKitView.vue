@@ -136,7 +136,7 @@
             <span
               :class="[
                 'font-bold text-xs uppercase px-2 py-0.5 rounded-full inline-block mt-0.5 border',
-                isPaid ? 'bg-brand-gold/15 text-brand-gold border-brand-gold/40' : isUnpaid ? 'bg-brand-red/15 text-brand-red border-brand-red/40' : 'bg-neutral-800 text-neutral-300 border-neutral-700'
+                paymentBadgeConfig.badgeClass
               ]"
             >
               {{ statusLabel }}
@@ -157,12 +157,16 @@
       <!-- Action & Instructions Card -->
       <div class="bg-brand-charcoal rounded-xl p-3.5 border border-white/10 shadow-card text-xs">
         <h4 class="font-bold text-white mb-1 flex items-center gap-1.5">
-          <span v-if="isPaid" class="text-brand-gold font-bold">✓</span>
+          <span v-if="isPaid" class="text-emerald-400 font-bold">✓</span>
+          <span v-else-if="isHalfPaid" class="text-amber-400 font-bold">◐</span>
           <span v-else class="text-brand-red font-bold">ℹ</span>
           <span>{{ t('my_kit.note_title') }}</span>
         </h4>
         <p v-if="isPaid" class="text-brand-muted leading-relaxed">
           {{ t('my_kit.paid_msg', { size: selectedPlayer.jersey_size || selectedPlayer.size, number: formatJerseyNumber(selectedPlayer.shirt_number ?? selectedPlayer.number) }) }}
+        </p>
+        <p v-else-if="isHalfPaid" class="text-brand-muted leading-relaxed">
+          {{ t('my_kit.half_paid_msg', { size: selectedPlayer.jersey_size || selectedPlayer.size, number: formatJerseyNumber(selectedPlayer.shirt_number ?? selectedPlayer.number) }) }}
         </p>
         <p v-else-if="isUnpaid" class="text-brand-muted leading-relaxed">
           {{ t('my_kit.unpaid_msg') }}
@@ -240,7 +244,9 @@
             :class="[
               'text-[10px] font-mono font-bold px-2 py-0.5 rounded-full border',
               normalizeStatus(player) === 'Paid'
-                ? 'bg-brand-gold/15 text-brand-gold border-brand-gold/40'
+                ? 'bg-emerald-500/15 text-emerald-400 border-emerald-500/40'
+                : normalizeStatus(player) === '50% Paid'
+                ? 'bg-amber-500/15 text-amber-400 border-amber-500/40'
                 : normalizeStatus(player) === 'Unpaid'
                 ? 'bg-brand-red/15 text-brand-red border-brand-red/40'
                 : 'bg-neutral-800 text-neutral-300 border-neutral-700'
@@ -313,32 +319,62 @@ const isGoalkeeper = computed(() => {
 
 const isPaid = computed(() => {
   if (!selectedPlayer.value) return false
-  const s = selectedPlayer.value.payment_status || selectedPlayer.value.status
-  return s === 'paid' || s === 'Paid'
+  const s = String(selectedPlayer.value.payment_status || selectedPlayer.value.status || '').toLowerCase().replace(/[\s%]+/g, '_')
+  return s === 'paid'
+})
+
+const isHalfPaid = computed(() => {
+  if (!selectedPlayer.value) return false
+  const s = String(selectedPlayer.value.payment_status || selectedPlayer.value.status || '').toLowerCase().replace(/[\s%]+/g, '_')
+  return s === 'half_paid' || s === '50_paid' || s === '50_percent_paid'
 })
 
 const isUnpaid = computed(() => {
   if (!selectedPlayer.value) return false
-  const s = selectedPlayer.value.payment_status || selectedPlayer.value.status
-  return s === 'unpaid' || s === 'Unpaid'
+  const s = String(selectedPlayer.value.payment_status || selectedPlayer.value.status || '').toLowerCase().replace(/[\s%]+/g, '_')
+  return s === 'unpaid'
 })
 
 const statusLabel = computed(() => {
   if (isPaid.value) return t('filters.paid')
+  if (isHalfPaid.value) return t('filters.half_paid')
   if (isUnpaid.value) return t('filters.unpaid')
   return t('filters.not_confirmed')
 })
 
+const paymentBadgeConfig = computed(() => {
+  if (isPaid.value) {
+    return {
+      badgeClass: 'bg-emerald-500/15 text-emerald-400 border-emerald-500/40'
+    }
+  }
+  if (isHalfPaid.value) {
+    return {
+      badgeClass: 'bg-amber-500/15 text-amber-400 border-amber-500/40'
+    }
+  }
+  if (isUnpaid.value) {
+    return {
+      badgeClass: 'bg-brand-red/15 text-brand-red border-brand-red/40'
+    }
+  }
+  return {
+    badgeClass: 'bg-neutral-800 text-neutral-300 border-neutral-700'
+  }
+})
+
 const normalizeStatus = (player) => {
-  const s = player.payment_status || player.status
-  if (s === 'paid' || s === 'Paid') return 'Paid'
-  if (s === 'not_confirmed' || s === 'Not Confirmed') return 'Not Confirmed'
+  const s = String(player.payment_status || player.status || '').toLowerCase().replace(/[\s%]+/g, '_')
+  if (s === 'paid') return 'Paid'
+  if (s === 'half_paid' || s === '50_paid' || s === '50_percent_paid') return '50% Paid'
+  if (s === 'not_confirmed') return 'Not Confirmed'
   return 'Unpaid'
 }
 
 const normalizeStatusLabel = (player) => {
   const s = normalizeStatus(player)
   if (s === 'Paid') return t('filters.paid')
+  if (s === '50% Paid') return t('filters.half_paid')
   if (s === 'Unpaid') return t('filters.unpaid')
   return t('filters.not_confirmed')
 }

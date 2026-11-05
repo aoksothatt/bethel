@@ -45,6 +45,7 @@
           <SummaryStats
             :total="stats.total"
             :paid="stats.paid"
+            :half-paid="stats.halfPaid"
             :unpaid="stats.unpaid"
             :not-confirmed="stats.notConfirmed"
             :sizes="stats.sizes"
@@ -118,9 +119,10 @@ let pollingTimer = null
 
 // Normalize status helper
 const normalizeStatus = (player) => {
-  const s = player.payment_status || player.status
-  if (s === 'paid' || s === 'Paid') return 'Paid'
-  if (s === 'not_confirmed' || s === 'Not Confirmed') return 'Not Confirmed'
+  const s = String(player.payment_status || player.status || '').toLowerCase().replace(/[\s%]+/g, '_')
+  if (s === 'paid') return 'Paid'
+  if (s === 'half_paid' || s === '50_paid' || s === '50_percent_paid') return '50% Paid'
+  if (s === 'not_confirmed') return 'Not Confirmed'
   return 'Unpaid'
 }
 
@@ -160,6 +162,7 @@ const stats = computed(() => {
     return {
       total: backendStats.value.total ?? players.value.length,
       paid: backendStats.value.paid ?? 0,
+      halfPaid: backendStats.value.half_paid ?? backendStats.value.halfPaid ?? 0,
       unpaid: backendStats.value.unpaid ?? 0,
       notConfirmed: backendStats.value.not_confirmed ?? backendStats.value.notConfirmed ?? 0,
       sizes: backendStats.value.sizes ?? { M: 0, L: 0, XL: 0 }
@@ -168,6 +171,7 @@ const stats = computed(() => {
 
   const total = players.value.length
   let paid = 0
+  let halfPaid = 0
   let unpaid = 0
   let notConfirmed = 0
   const sizes = { M: 0, L: 0, XL: 0 }
@@ -175,6 +179,7 @@ const stats = computed(() => {
   for (const player of players.value) {
     const s = normalizeStatus(player)
     if (s === 'Paid') paid++
+    else if (s === '50% Paid') halfPaid++
     else if (s === 'Unpaid') unpaid++
     else if (s === 'Not Confirmed') notConfirmed++
 
@@ -184,13 +189,14 @@ const stats = computed(() => {
     }
   }
 
-  return { total, paid, unpaid, notConfirmed, sizes }
+  return { total, paid, halfPaid, unpaid, notConfirmed, sizes }
 })
 
 // Filter counts for the payment filter buttons
 const filterCounts = computed(() => ({
   All: stats.value.total,
   Paid: stats.value.paid,
+  '50% Paid': stats.value.halfPaid,
   Unpaid: stats.value.unpaid,
   'Not Confirmed': stats.value.notConfirmed
 }))

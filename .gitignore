@@ -18,6 +18,8 @@ dist-ssr
 backend/database/*.sqlite
 backend/database/*.sqlite-journal
 backend/database/*.sqlite.backup*
+backend/database/backups/
+*.pem
 
 # Logs & Cache
 *.log

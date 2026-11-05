@@ -25,47 +25,58 @@
 
     <!-- Unified Statistics Card (Charcoal #171717) -->
     <div class="relative z-10 bg-brand-charcoal rounded-2xl p-3 sm:p-3.5 border border-white/10 shadow-card">
-      <!-- 4 Compact Stat Pills in a Clean Row -->
-      <div class="grid grid-cols-4 gap-1 sm:gap-2 text-center divide-x divide-white/10">
+      <!-- 5 Compact Stat Pills in a Clean Row -->
+      <div class="grid grid-cols-5 gap-0.5 sm:gap-1.5 text-center divide-x divide-white/10">
         <!-- Total Players -->
         <div class="px-0.5 sm:px-1">
-          <span class="block text-[10px] font-semibold text-brand-muted uppercase tracking-wider truncate">
+          <span class="block text-[9px] sm:text-[10px] font-semibold text-brand-muted uppercase tracking-wider truncate">
             {{ t('stats.players') }}
           </span>
-          <span class="text-lg sm:text-xl font-bold text-white font-mono leading-tight block mt-0.5">{{ total }}</span>
+          <span class="text-base sm:text-xl font-bold text-white font-mono leading-tight block mt-0.5">{{ total }}</span>
         </div>
 
-        <!-- Paid (Gold Success Indicator) -->
+        <!-- Paid (Green Success Indicator) -->
         <div class="px-0.5 sm:px-1">
           <div class="flex items-center justify-center gap-1">
-            <span class="w-1.5 h-1.5 rounded-full bg-brand-gold"></span>
-            <span class="text-[10px] font-semibold text-brand-gold uppercase tracking-wider truncate">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+            <span class="text-[9px] sm:text-[10px] font-semibold text-emerald-400 uppercase tracking-wider truncate">
               {{ t('stats.paid') }}
             </span>
           </div>
-          <span class="text-lg sm:text-xl font-bold text-brand-gold font-mono leading-tight block mt-0.5">{{ paid }}</span>
+          <span class="text-base sm:text-xl font-bold text-emerald-400 font-mono leading-tight block mt-0.5">{{ paid }}</span>
+        </div>
+
+        <!-- 50% Paid (Amber Indicator) -->
+        <div class="px-0.5 sm:px-1">
+          <div class="flex items-center justify-center gap-1">
+            <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+            <span class="text-[9px] sm:text-[10px] font-semibold text-amber-400 uppercase tracking-wider truncate">
+              50%
+            </span>
+          </div>
+          <span class="text-base sm:text-xl font-bold text-amber-400 font-mono leading-tight block mt-0.5">{{ halfPaid }}</span>
         </div>
 
         <!-- Unpaid (Football Red Accent) -->
         <div class="px-0.5 sm:px-1">
           <div class="flex items-center justify-center gap-1">
             <span class="w-1.5 h-1.5 rounded-full bg-brand-red"></span>
-            <span class="text-[10px] font-semibold text-brand-red uppercase tracking-wider truncate">
+            <span class="text-[9px] sm:text-[10px] font-semibold text-brand-red uppercase tracking-wider truncate">
               {{ t('stats.unpaid') }}
             </span>
           </div>
-          <span class="text-lg sm:text-xl font-bold text-brand-red font-mono leading-tight block mt-0.5">{{ unpaid }}</span>
+          <span class="text-base sm:text-xl font-bold text-brand-red font-mono leading-tight block mt-0.5">{{ unpaid }}</span>
         </div>
 
         <!-- Not Confirmed (Neutral Gray) -->
         <div class="px-0.5 sm:px-1">
           <div class="flex items-center justify-center gap-1">
             <span class="w-1.5 h-1.5 rounded-full bg-neutral-400"></span>
-            <span class="text-[10px] font-semibold text-neutral-300 uppercase tracking-wider truncate">
+            <span class="text-[9px] sm:text-[10px] font-semibold text-neutral-300 uppercase tracking-wider truncate">
               {{ t('stats.review') }}
             </span>
           </div>
-          <span class="text-lg sm:text-xl font-bold text-neutral-300 font-mono leading-tight block mt-0.5">{{ notConfirmed }}</span>
+          <span class="text-base sm:text-xl font-bold text-neutral-300 font-mono leading-tight block mt-0.5">{{ notConfirmed }}</span>
         </div>
       </div>
 
@@ -120,6 +131,10 @@ defineProps({
   paid: {
     type: Number,
     required: true
+  },
+  halfPaid: {
+    type: Number,
+    default: 0
   },
   unpaid: {
     type: Number,

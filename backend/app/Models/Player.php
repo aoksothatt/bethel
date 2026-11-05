@@ -26,8 +26,14 @@ class Player extends Model
      */
     public function setPaymentStatusAttribute($value): void
     {
-        $normalized = strtolower(str_replace(' ', '_', trim((string)$value)));
-        if (in_array($normalized, ['paid', 'unpaid', 'not_confirmed'])) {
+        $raw = strtolower(trim((string)$value));
+        if (in_array($raw, ['50% paid', '50%_paid', '50_paid', '50paid', '50_percent_paid', 'half_paid', 'half paid', 'halfpaid', '50%'])) {
+            $this->attributes['payment_status'] = 'half_paid';
+            return;
+        }
+
+        $normalized = str_replace(' ', '_', $raw);
+        if (in_array($normalized, ['paid', 'half_paid', 'unpaid', 'not_confirmed'])) {
             $this->attributes['payment_status'] = $normalized;
         } else {
             $this->attributes['payment_status'] = 'unpaid';

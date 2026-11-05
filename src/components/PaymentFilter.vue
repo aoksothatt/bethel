@@ -64,8 +64,15 @@ const filterOptions = computed(() => [
     value: 'Paid',
     label: t('filters.paid'),
     count: props.counts.Paid ?? 0,
-    activeClass: 'bg-brand-gold/20 text-brand-gold border-brand-gold/60 font-bold',
-    badgeActiveClass: 'bg-brand-gold text-black'
+    activeClass: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/60 font-bold',
+    badgeActiveClass: 'bg-emerald-500 text-black'
+  },
+  {
+    value: '50% Paid',
+    label: t('filters.half_paid'),
+    count: props.counts['50% Paid'] ?? props.counts.halfPaid ?? 0,
+    activeClass: 'bg-amber-500/20 text-amber-400 border-amber-500/60 font-bold',
+    badgeActiveClass: 'bg-amber-500 text-black'
   },
   {
     value: 'Unpaid',
@@ -76,7 +83,7 @@ const filterOptions = computed(() => [
   },
   {
     value: 'Not Confirmed',
-    label: t('filters.review'),
+    label: t('filters.not_confirmed'),
     count: props.counts['Not Confirmed'] ?? 0,
     activeClass: 'bg-neutral-800 text-neutral-200 border-neutral-600 font-bold',
     badgeActiveClass: 'bg-neutral-700 text-white'

@@ -61,7 +61,7 @@
     <main class="max-w-7xl mx-auto px-4 sm:px-6 py-5 sm:py-6 space-y-5">
       <!-- 1. KPI Overview Cards -->
       <section aria-label="Admin KPI Overview">
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
+        <div class="grid grid-cols-2 sm:grid-cols-5 gap-3">
           <!-- Total Players -->
           <div class="bg-brand-charcoal rounded-2xl p-4 border border-white/10 shadow-card">
             <span class="text-[11px] font-semibold text-brand-muted uppercase tracking-wider block">
@@ -73,21 +73,35 @@
             </div>
           </div>
 
-          <!-- Paid -->
-          <div class="bg-brand-charcoal rounded-2xl p-4 border border-brand-gold/30 shadow-card relative overflow-hidden">
+          <!-- Paid (Green) -->
+          <div class="bg-brand-charcoal rounded-2xl p-4 border border-emerald-500/30 shadow-card relative overflow-hidden">
             <div class="flex items-center justify-between">
-              <span class="text-[11px] font-semibold text-brand-gold uppercase tracking-wider block">
+              <span class="text-[11px] font-semibold text-emerald-400 uppercase tracking-wider block">
                 {{ t('filters.paid') }}
               </span>
-              <span class="w-2 h-2 rounded-full bg-brand-gold"></span>
+              <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
             </div>
             <div class="mt-1.5 flex items-baseline gap-2">
-              <span class="text-2xl sm:text-3xl font-bold text-brand-gold font-mono">{{ stats.paid }}</span>
+              <span class="text-2xl sm:text-3xl font-bold text-emerald-400 font-mono">{{ stats.paid }}</span>
               <span class="text-xs text-brand-muted">{{ t('admin.confirmed') }}</span>
             </div>
           </div>
 
-          <!-- Unpaid -->
+          <!-- 50% Paid (Amber) -->
+          <div class="bg-brand-charcoal rounded-2xl p-4 border border-amber-500/30 shadow-card relative overflow-hidden">
+            <div class="flex items-center justify-between">
+              <span class="text-[11px] font-semibold text-amber-400 uppercase tracking-wider block">
+                {{ t('filters.half_paid') }}
+              </span>
+              <span class="w-2 h-2 rounded-full bg-amber-400"></span>
+            </div>
+            <div class="mt-1.5 flex items-baseline gap-2">
+              <span class="text-2xl sm:text-3xl font-bold text-amber-400 font-mono">{{ stats.halfPaid }}</span>
+              <span class="text-xs text-brand-muted">50%</span>
+            </div>
+          </div>
+
+          <!-- Unpaid (Red) -->
           <div class="bg-brand-charcoal rounded-2xl p-4 border border-brand-red/30 shadow-card">
             <div class="flex items-center justify-between">
               <span class="text-[11px] font-semibold text-brand-red uppercase tracking-wider block">
@@ -101,7 +115,7 @@
             </div>
           </div>
 
-          <!-- Not Confirmed -->
+          <!-- Not Confirmed (Grey) -->
           <div class="bg-brand-charcoal rounded-2xl p-4 border border-neutral-700 shadow-card">
             <div class="flex items-center justify-between">
               <span class="text-[11px] font-semibold text-neutral-300 uppercase tracking-wider block">
@@ -160,6 +174,7 @@
           >
             <option value="All">{{ t('filters.all') }}</option>
             <option value="Paid">{{ t('filters.paid') }}</option>
+            <option value="50% Paid">{{ t('filters.half_paid') }}</option>
             <option value="Unpaid">{{ t('filters.unpaid') }}</option>
             <option value="Not Confirmed">{{ t('filters.not_confirmed') }}</option>
           </select>
@@ -251,13 +266,16 @@
                     :class="[
                       'h-8 px-2.5 rounded-lg text-xs font-mono font-bold uppercase tracking-wider cursor-pointer border transition-colors outline-none shadow-xs',
                       normalizeStatus(player) === 'Paid'
-                        ? 'bg-brand-gold/15 text-brand-gold border-brand-gold/40'
+                        ? 'bg-emerald-500/15 text-emerald-400 border-emerald-500/40'
+                        : normalizeStatus(player) === '50% Paid'
+                        ? 'bg-amber-500/15 text-amber-400 border-amber-500/40'
                         : normalizeStatus(player) === 'Unpaid'
                         ? 'bg-brand-red/15 text-brand-red border-brand-red/40'
                         : 'bg-neutral-800 text-neutral-300 border-neutral-700'
                     ]"
                   >
-                    <option value="Paid" class="bg-[#171717] text-brand-gold font-bold">{{ t('filters.paid') }}</option>
+                    <option value="Paid" class="bg-[#171717] text-emerald-400 font-bold">{{ t('filters.paid') }}</option>
+                    <option value="50% Paid" class="bg-[#171717] text-amber-400 font-bold">{{ t('filters.half_paid') }}</option>
                     <option value="Unpaid" class="bg-[#171717] text-brand-red font-bold">{{ t('filters.unpaid') }}</option>
                     <option value="Not Confirmed" class="bg-[#171717] text-neutral-300 font-bold">{{ t('filters.not_confirmed') }}</option>
                   </select>
@@ -390,7 +408,8 @@
               required
               class="w-full h-10 px-3 text-xs font-mono font-bold bg-[#222222] text-white rounded-xl border border-white/10 focus:outline-none focus:border-brand-red uppercase"
             >
-              <option value="paid" class="bg-[#171717] text-brand-gold font-bold">{{ t('filters.paid') }}</option>
+              <option value="paid" class="bg-[#171717] text-emerald-400 font-bold">{{ t('filters.paid') }}</option>
+              <option value="half_paid" class="bg-[#171717] text-amber-400 font-bold">{{ t('filters.half_paid') }}</option>
               <option value="unpaid" class="bg-[#171717] text-brand-red font-bold">{{ t('filters.unpaid') }}</option>
               <option value="not_confirmed" class="bg-[#171717] text-neutral-300 font-bold">{{ t('filters.not_confirmed') }}</option>
             </select>
@@ -550,9 +569,10 @@ onMounted(() => {
 
 // Normalizer for status display
 const normalizeStatus = (player) => {
-  const s = player.payment_status || player.status
-  if (s === 'paid' || s === 'Paid') return 'Paid'
-  if (s === 'not_confirmed' || s === 'Not Confirmed') return 'Not Confirmed'
+  const s = String(player.payment_status || player.status || '').toLowerCase().replace(/[\s%]+/g, '_')
+  if (s === 'paid') return 'Paid'
+  if (s === 'half_paid' || s === '50_paid' || s === '50_percent_paid') return '50% Paid'
+  if (s === 'not_confirmed') return 'Not Confirmed'
   return 'Unpaid'
 }
 
@@ -562,6 +582,7 @@ const stats = computed(() => {
     return {
       total: backendStats.value.total ?? players.value.length,
       paid: backendStats.value.paid ?? 0,
+      halfPaid: backendStats.value.half_paid ?? backendStats.value.halfPaid ?? 0,
       unpaid: backendStats.value.unpaid ?? 0,
       notConfirmed: backendStats.value.not_confirmed ?? backendStats.value.notConfirmed ?? 0,
       sizes: backendStats.value.sizes ?? { M: 0, L: 0, XL: 0 }
@@ -570,6 +591,7 @@ const stats = computed(() => {
 
   const total = players.value.length
   let paid = 0
+  let halfPaid = 0
   let unpaid = 0
   let notConfirmed = 0
   const sizes = { M: 0, L: 0, XL: 0 }
@@ -577,6 +599,7 @@ const stats = computed(() => {
   for (const player of players.value) {
     const s = normalizeStatus(player)
     if (s === 'Paid') paid++
+    else if (s === '50% Paid') halfPaid++
     else if (s === 'Unpaid') unpaid++
     else if (s === 'Not Confirmed') notConfirmed++
 
@@ -586,7 +609,7 @@ const stats = computed(() => {
     }
   }
 
-  return { total, paid, unpaid, notConfirmed, sizes }
+  return { total, paid, halfPaid, unpaid, notConfirmed, sizes }
 })
 
 // Filtered players list
@@ -617,7 +640,10 @@ const filteredPlayers = computed(() => {
 // 1-Tap Quick Change Payment Status
 const quickChangePayment = async (player, newStatus) => {
   isUpdatingId.value = player.id
-  const apiStatus = newStatus === 'Paid' ? 'paid' : newStatus === 'Not Confirmed' ? 'not_confirmed' : 'unpaid'
+  let apiStatus = 'unpaid'
+  if (newStatus === 'Paid') apiStatus = 'paid'
+  else if (newStatus === '50% Paid') apiStatus = 'half_paid'
+  else if (newStatus === 'Not Confirmed') apiStatus = 'not_confirmed'
 
   try {
     const res = await api.updatePaymentStatus(player.id, apiStatus)
@@ -626,7 +652,14 @@ const quickChangePayment = async (player, newStatus) => {
     if (res.stats) {
       backendStats.value = res.stats
     }
-    const localizedStatus = newStatus === 'Paid' ? t('filters.paid') : newStatus === 'Not Confirmed' ? t('filters.not_confirmed') : t('filters.unpaid')
+    const localizedStatus =
+      newStatus === 'Paid'
+        ? t('filters.paid')
+        : newStatus === '50% Paid'
+        ? t('filters.half_paid')
+        : newStatus === 'Not Confirmed'
+        ? t('filters.not_confirmed')
+        : t('filters.unpaid')
     showToast(t('admin.updated_status', { name: player.name, status: localizedStatus }))
   } catch (err) {
     showToast(`Error: ${err.message}`)
@@ -651,7 +684,12 @@ const openAddModal = () => {
 
 const openEditModal = (player) => {
   isEditing.value = true
-  const status = player.payment_status || (player.status === 'Paid' ? 'paid' : player.status === 'Not Confirmed' ? 'not_confirmed' : 'unpaid')
+  const rawStatus = String(player.payment_status || player.status || '').toLowerCase().replace(/[\s%]+/g, '_')
+  let status = 'unpaid'
+  if (rawStatus === 'paid') status = 'paid'
+  else if (rawStatus === 'half_paid' || rawStatus === '50_paid' || rawStatus === '50_percent_paid') status = 'half_paid'
+  else if (rawStatus === 'not_confirmed') status = 'not_confirmed'
+
   form.value = {
     id: player.id,
     name: player.name,
