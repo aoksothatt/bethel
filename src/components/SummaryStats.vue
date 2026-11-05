@@ -6,17 +6,17 @@
       style="background: radial-gradient(circle at 60% 0%, rgba(213, 46, 56, 0.10) 0%, transparent 60%), radial-gradient(circle at 90% 20%, rgba(213, 172, 80, 0.08) 0%, transparent 50%);"
     ></div>
 
-    <!-- Subtle Oversized Team Emblem Watermark (Non-intrusive 6% opacity) -->
-    <div class="absolute -top-4 -right-6 w-40 h-40 sm:w-48 sm:h-48 opacity-[0.06] pointer-events-none select-none">
+    <!-- Subtle Team Emblem Watermark in Hero Header -->
+    <div class="absolute top-1 right-1 w-28 h-28 sm:w-32 sm:h-32 opacity-[0.12] pointer-events-none select-none">
       <img
         src="/images/bethel-logo.jpg"
         alt=""
-        class="w-full h-full object-contain filter grayscale contrast-125"
+        class="w-full h-full object-contain filter contrast-125"
       />
     </div>
 
-    <!-- Compact Team Tag -->
-    <div class="relative z-10 mb-2.5">
+    <!-- Compact Team Tag with breathing room so the status bar comes down -->
+    <div class="relative z-10 pt-1 pb-6 sm:pb-8">
       <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-brand-charcoal border border-brand-gold/30 text-[10px] font-bold tracking-wider text-brand-gold uppercase shadow-xs">
         <span class="w-1.5 h-1.5 rounded-full bg-brand-red animate-pulse"></span>
         <span>{{ t('hero.tag') }}</span>
