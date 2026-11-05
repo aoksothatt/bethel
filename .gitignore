@@ -1,0 +1,35 @@
+# Node
+node_modules
+dist
+dist-ssr
+*.local
+.npm
+
+# Environments & Secrets
+.env
+.env.*
+!.env.example
+!.env.production.example
+
+# Databases & Backups
+*.sqlite
+*.sqlite-journal
+*.sqlite.backup*
+backend/database/*.sqlite
+backend/database/*.sqlite-journal
+backend/database/*.sqlite.backup*
+
+# Logs & Cache
+*.log
+backend/storage/logs/*.log
+backend/storage/framework/cache/*
+backend/storage/framework/sessions/*
+backend/storage/framework/views/*
+backend/bootstrap/cache/*.php
+
+# IDE & OS
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+Thumbs.db

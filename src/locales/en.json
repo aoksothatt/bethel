@@ -1,0 +1,118 @@
+{
+  "app": {
+    "title": "Bethel High School",
+    "subtitle": "Official Football Squad Kit",
+    "season": "Season",
+    "admin": "Admin"
+  },
+  "hero": {
+    "tag": "BETHEL HIGH SCHOOL · 2026"
+  },
+  "stats": {
+    "total": "Total Players",
+    "players": "Players",
+    "paid": "Paid",
+    "unpaid": "Unpaid",
+    "not_confirmed": "Not Confirmed",
+    "review": "Review",
+    "size_distribution": "Size Distribution",
+    "sizes": "Sizes"
+  },
+  "search": {
+    "placeholder": "Search your name or shirt number...",
+    "quick_placeholder": "Quick search player name...",
+    "clear": "Clear search",
+    "reset": "Reset Search",
+    "no_players": "No players found",
+    "no_players_desc": "No player matched your search or active filter. Try searching another name or number."
+  },
+  "filters": {
+    "all": "All Players",
+    "all_short": "All",
+    "paid": "Paid",
+    "unpaid": "Unpaid",
+    "not_confirmed": "Not Confirmed",
+    "review": "Review",
+    "clear": "Clear filters"
+  },
+  "player": {
+    "roster": "Squad Roster",
+    "player": "Player",
+    "jersey_size": "Jersey size",
+    "shirt_number": "Shirt Number",
+    "notes": "Notes",
+    "goalkeeper": "Goalkeeper",
+    "gk": "GK"
+  },
+  "nav": {
+    "squad": "Squad",
+    "my_kit": "My Kit",
+    "payments": "Payments"
+  },
+  "my_kit": {
+    "badge": "Personal Pass",
+    "title": "My Kit Pass",
+    "subtitle": "Check your jersey order and matchday payment status.",
+    "official_kit": "BETHEL HIGH SCHOOL OFFICIAL KIT",
+    "kit_size": "Kit Size",
+    "payment": "Payment",
+    "role": "Role",
+    "note_title": "Matchday Status Note",
+    "paid_msg": "Your jersey payment is confirmed! Kit size {size} with shirt number #{number} is reserved for you.",
+    "unpaid_msg": "Your jersey is currently marked as Unpaid. Please submit your payment to the team organizer before kit printing.",
+    "unconfirmed_msg": "Your status is Not Confirmed. Please speak with the team organizer to verify your kit details.",
+    "switch_player": "Looking for another kit? Switch Player",
+    "find_title": "Find Your Jersey",
+    "find_desc": "Select your name below to view your personalized kit card and payment details on this phone."
+  },
+  "payments": {
+    "badge": "Financial Ledger",
+    "title": "Payments & Ledger",
+    "subtitle": "Squad jersey collection and fulfillment tracking.",
+    "progress": "Collection Progress",
+    "kits": "Kits",
+    "pending": "Pending",
+    "review": "Review"
+  },
+  "admin": {
+    "portal": "Bethel High School Admin",
+    "portal_subtitle": "Official Squad Kit • Season 2026",
+    "dashboard": "Admin Dashboard",
+    "manager": "Manager",
+    "view_public": "View Public Site",
+    "logout": "Logout",
+    "total_squad": "Total Squad",
+    "confirmed": "confirmed",
+    "pending_fee": "pending",
+    "needs_review": "action",
+    "sizing_breakdown": "Kit Sizing Breakdown:",
+    "search_placeholder": "Search name, number #...",
+    "add_player": "Add New Player",
+    "edit_player": "Edit Squad Player",
+    "delete_player": "Delete Player",
+    "add_desc": "Register a new player in the official Bethel High School roster.",
+    "edit_desc": "Update jersey details and player payment status.",
+    "delete_confirm_title": "Delete Player #{number} ({name})?",
+    "delete_confirm_desc": "Are you sure you want to remove this player from the official squad list? This will remove their record from the database.",
+    "player_name": "Player Name",
+    "shirt_number": "Shirt Number",
+    "jersey_size": "Jersey Size",
+    "payment_status": "Payment Status",
+    "notes_role": "Notes / Role (Supports Khmer)",
+    "actions": "Actions",
+    "cancel": "Cancel",
+    "save_changes": "Save Changes",
+    "create_player": "Create Player",
+    "saving": "Saving...",
+    "deleting": "Deleting...",
+    "email": "Admin Email",
+    "password": "Password",
+    "sign_in": "Sign In to Dashboard",
+    "signing_in": "Signing In...",
+    "tip_dropdown": "Tip: Click the payment status dropdown to update status instantly.",
+    "updated_status": "Updated {name} to {status}",
+    "added_player": "Added new player {name}",
+    "deleted_player": "Deleted player {name}",
+    "return_public": "Return to Team Website"
+  }
+}
