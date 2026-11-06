@@ -121,6 +121,13 @@
     "updated_status": "បានធ្វើបច្ចុប្បន្នភាព {name} ទៅជា {status}",
     "added_player": "បានបន្ថែមរាយនាមកីឡាករថ្មី {name}",
     "deleted_player": "បានលុបកីឡាករ {name}",
-    "return_public": "ត្រឡប់ទៅគេហទំព័រក្រុមវិញ"
+    "return_public": "ត្រឡប់ទៅគេហទំព័រក្រុមវិញ",
+    "export_excel": "ទាញយក Excel",
+    "export_pdf": "ទាញយក PDF",
+    "exporting_excel": "កំពុងបង្កើត Excel...",
+    "generating_pdf": "កំពុងបង្កើត PDF...",
+    "export_success": "បានបង្កើតរបាយការណ៍ដោយជោគជ័យ។",
+    "export_failed": "ការបង្កើតរបាយការណ៍បានបរាជ័យ។ សូមព្យាយាមម្ដងទៀត។",
+    "no_export_records": "មិនមានទិន្នន័យកីឡាករដែលត្រូវនឹងលក្ខខណ្ឌស្វែងរកទេ។"
   }
 }

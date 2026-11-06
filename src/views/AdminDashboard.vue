@@ -195,17 +195,56 @@
           </select>
         </div>
 
-        <!-- Add Player Action Button -->
-        <button
-          type="button"
-          @click="openAddModal"
-          class="h-10 px-4 rounded-xl bg-brand-red text-white font-bold text-xs uppercase tracking-wider hover:bg-brand-red-hover transition-colors flex items-center justify-center gap-2 shadow-sm cursor-pointer flex-shrink-0"
-        >
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4" />
-          </svg>
-          <span>{{ t('admin.add_player') }}</span>
-        </button>
+        <!-- Action Controls: Export Excel, Export PDF & Add Player -->
+        <div class="flex flex-wrap items-center gap-2 flex-shrink-0">
+          <!-- Export Excel Button (Subtle Emerald Accent) -->
+          <button
+            type="button"
+            @click="handleExportExcel"
+            :disabled="isExportingExcel || isExportingPdf"
+            class="h-10 px-3 sm:px-3.5 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 font-semibold text-xs transition-colors flex items-center justify-center gap-1.5 shadow-xs cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+            :title="t('admin.export_excel')"
+          >
+            <svg v-if="!isExportingExcel" class="w-4 h-4 text-emerald-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            <svg v-else class="w-4 h-4 animate-spin text-emerald-400 flex-shrink-0" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            <span>{{ isExportingExcel ? t('admin.exporting_excel') : t('admin.export_excel') }}</span>
+          </button>
+
+          <!-- Export PDF Button (Subtle Gold Accent) -->
+          <button
+            type="button"
+            @click="handleExportPdf"
+            :disabled="isExportingExcel || isExportingPdf"
+            class="h-10 px-3 sm:px-3.5 rounded-xl bg-brand-gold/10 hover:bg-brand-gold/20 text-brand-gold border border-brand-gold/30 font-semibold text-xs transition-colors flex items-center justify-center gap-1.5 shadow-xs cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+            :title="t('admin.export_pdf')"
+          >
+            <svg v-if="!isExportingPdf" class="w-4 h-4 text-brand-gold flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+            </svg>
+            <svg v-else class="w-4 h-4 animate-spin text-brand-gold flex-shrink-0" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            <span>{{ isExportingPdf ? t('admin.generating_pdf') : t('admin.export_pdf') }}</span>
+          </button>
+
+          <!-- Add Player Action Button -->
+          <button
+            type="button"
+            @click="openAddModal"
+            class="h-10 px-4 rounded-xl bg-brand-red text-white font-bold text-xs uppercase tracking-wider hover:bg-brand-red-hover transition-colors flex items-center justify-center gap-2 shadow-sm cursor-pointer flex-shrink-0"
+          >
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4" />
+            </svg>
+            <span>{{ t('admin.add_player') }}</span>
+          </button>
+        </div>
       </section>
 
       <!-- 3. Players Management Table -->
@@ -507,6 +546,7 @@ import { useI18n } from 'vue-i18n'
 import { api, removeAdminToken } from '../services/api'
 import LanguageSwitcher from '../components/LanguageSwitcher.vue'
 import { formatJerseyNumber, JERSEY_SIZES } from '../utils/formatters'
+import { exportSquadToExcel, exportSquadToPdf } from '../utils/exportUtils'
 
 const router = useRouter()
 const { t } = useI18n()
@@ -537,6 +577,10 @@ const form = ref({
 const showDeleteModal = ref(false)
 const deletingPlayer = ref(null)
 const isDeleting = ref(false)
+
+// Export Processing States
+const isExportingExcel = ref(false)
+const isExportingPdf = ref(false)
 
 // Toast State
 const toastMessage = ref('')
@@ -768,6 +812,58 @@ const confirmDeletePlayer = async () => {
     showToast(`Error: ${err.message}`)
   } finally {
     isDeleting.value = false
+  }
+}
+
+// Export Squad to Excel (.xlsx)
+const handleExportExcel = async () => {
+  if (isExportingExcel.value || isExportingPdf.value) return
+
+  if (!filteredPlayers.value || filteredPlayers.value.length === 0) {
+    showToast(t('admin.no_export_records'))
+    return
+  }
+
+  isExportingExcel.value = true
+  try {
+    const filterOptions = {
+      searchQuery: searchQuery.value,
+      filterStatus: filterStatus.value,
+      filterSize: filterSize.value
+    }
+    await exportSquadToExcel(filteredPlayers.value, filterOptions)
+    showToast(t('admin.export_success'))
+  } catch (err) {
+    console.error('Excel Export error:', err)
+    showToast(t('admin.export_failed'))
+  } finally {
+    isExportingExcel.value = false
+  }
+}
+
+// Export Squad to PDF (.pdf)
+const handleExportPdf = async () => {
+  if (isExportingExcel.value || isExportingPdf.value) return
+
+  if (!filteredPlayers.value || filteredPlayers.value.length === 0) {
+    showToast(t('admin.no_export_records'))
+    return
+  }
+
+  isExportingPdf.value = true
+  try {
+    const filterOptions = {
+      searchQuery: searchQuery.value,
+      filterStatus: filterStatus.value,
+      filterSize: filterSize.value
+    }
+    await exportSquadToPdf(filteredPlayers.value, filterOptions)
+    showToast(t('admin.export_success'))
+  } catch (err) {
+    console.error('PDF Export error:', err)
+    showToast(t('admin.export_failed'))
+  } finally {
+    isExportingPdf.value = false
   }
 }
 

@@ -121,6 +121,13 @@
     "updated_status": "Updated {name} to {status}",
     "added_player": "Added new player {name}",
     "deleted_player": "Deleted player {name}",
-    "return_public": "Return to Team Website"
+    "return_public": "Return to Team Website",
+    "export_excel": "Export Excel",
+    "export_pdf": "Export PDF",
+    "exporting_excel": "Exporting Excel...",
+    "generating_pdf": "Generating PDF...",
+    "export_success": "Export completed successfully.",
+    "export_failed": "Export failed. Please try again.",
+    "no_export_records": "No player records match the current filters."
   }
 }
