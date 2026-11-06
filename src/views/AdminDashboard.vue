@@ -136,7 +136,10 @@
             <span class="w-2 h-2 rounded-full bg-brand-gold"></span>
             {{ t('admin.sizing_breakdown') }}
           </span>
-          <div class="flex items-center gap-3 font-mono">
+          <div class="flex flex-wrap items-center gap-2 sm:gap-2.5 font-mono">
+            <span class="px-2.5 py-0.5 rounded-lg bg-[#222222] border border-white/10">
+              <strong class="text-brand-muted font-sans font-medium">S:</strong> <span class="text-neutral-300 font-bold">{{ stats.sizes.S || 0 }}</span>
+            </span>
             <span class="px-2.5 py-0.5 rounded-lg bg-[#222222] border border-white/10">
               <strong class="text-brand-muted font-sans font-medium">M:</strong> <span class="text-white font-bold">{{ stats.sizes.M || 0 }}</span>
             </span>
@@ -145,6 +148,9 @@
             </span>
             <span class="px-2.5 py-0.5 rounded-lg bg-[#222222] border border-white/10">
               <strong class="text-brand-muted font-sans font-medium">XL:</strong> <span class="text-brand-red font-bold">{{ stats.sizes.XL || 0 }}</span>
+            </span>
+            <span class="px-2.5 py-0.5 rounded-lg bg-[#222222] border border-white/10">
+              <strong class="text-brand-muted font-sans font-medium">XXL:</strong> <span class="text-brand-gold-light font-bold">{{ stats.sizes.XXL || 0 }}</span>
             </span>
           </div>
         </div>
@@ -185,9 +191,7 @@
             class="h-10 px-3 text-xs bg-[#222222] text-white rounded-xl border border-white/10 focus:outline-none focus:border-brand-red"
           >
             <option value="All">{{ t('filters.all_short') }} ({{ t('player.jersey_size') }})</option>
-            <option value="M">M</option>
-            <option value="L">L</option>
-            <option value="XL">XL</option>
+            <option v-for="s in JERSEY_SIZES" :key="s" :value="s">{{ s }}</option>
           </select>
         </div>
 
@@ -391,9 +395,7 @@
                 required
                 class="w-full h-10 px-3 text-xs font-mono font-bold bg-[#222222] text-white rounded-xl border border-white/10 focus:outline-none focus:border-brand-red"
               >
-                <option value="M" class="bg-[#171717]">M</option>
-                <option value="L" class="bg-[#171717]">L</option>
-                <option value="XL" class="bg-[#171717]">XL</option>
+                <option v-for="s in JERSEY_SIZES" :key="s" :value="s" class="bg-[#171717]">{{ s }}</option>
               </select>
             </div>
           </div>
@@ -504,7 +506,7 @@ import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { api, removeAdminToken } from '../services/api'
 import LanguageSwitcher from '../components/LanguageSwitcher.vue'
-import { formatJerseyNumber } from '../utils/formatters'
+import { formatJerseyNumber, JERSEY_SIZES } from '../utils/formatters'
 
 const router = useRouter()
 const { t } = useI18n()
@@ -585,7 +587,7 @@ const stats = computed(() => {
       halfPaid: backendStats.value.half_paid ?? backendStats.value.halfPaid ?? 0,
       unpaid: backendStats.value.unpaid ?? 0,
       notConfirmed: backendStats.value.not_confirmed ?? backendStats.value.notConfirmed ?? 0,
-      sizes: backendStats.value.sizes ?? { M: 0, L: 0, XL: 0 }
+      sizes: backendStats.value.sizes ?? { S: 0, M: 0, L: 0, XL: 0, XXL: 0 }
     }
   }
 
@@ -594,7 +596,7 @@ const stats = computed(() => {
   let halfPaid = 0
   let unpaid = 0
   let notConfirmed = 0
-  const sizes = { M: 0, L: 0, XL: 0 }
+  const sizes = { S: 0, M: 0, L: 0, XL: 0, XXL: 0 }
 
   for (const player of players.value) {
     const s = normalizeStatus(player)

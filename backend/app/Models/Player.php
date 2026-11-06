@@ -9,6 +9,11 @@ class Player extends Model
 {
     use HasFactory;
 
+    /**
+     * Supported jersey sizes.
+     */
+    public const SIZES = ['S', 'M', 'L', 'XL', 'XXL'];
+
     protected $fillable = [
         'name',
         'shirt_number',
@@ -20,6 +25,14 @@ class Player extends Model
     protected $casts = [
         'shirt_number' => 'integer',
     ];
+
+    /**
+     * Mutator to normalize jersey_size values to uppercase.
+     */
+    public function setJerseySizeAttribute($value): void
+    {
+        $this->attributes['jersey_size'] = strtoupper(trim((string)$value));
+    }
 
     /**
      * Mutator to normalize payment_status values

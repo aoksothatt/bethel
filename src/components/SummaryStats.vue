@@ -86,31 +86,45 @@
           <span class="text-[10px] uppercase tracking-wider font-semibold text-brand-muted">
             {{ t('stats.sizes') }}
           </span>
-          <div class="flex items-center gap-3 font-mono text-[11px] text-white">
+          <div class="flex items-center gap-2 sm:gap-2.5 font-mono text-[11px] text-white flex-wrap justify-end">
+            <span>S: <strong class="text-neutral-300">{{ sizes.S || 0 }}</strong></span>
+            <span class="text-white/20">|</span>
             <span>M: <strong class="text-white">{{ sizes.M || 0 }}</strong></span>
             <span class="text-white/20">|</span>
             <span>L: <strong class="text-brand-gold">{{ sizes.L || 0 }}</strong></span>
             <span class="text-white/20">|</span>
             <span>XL: <strong class="text-brand-red">{{ sizes.XL || 0 }}</strong></span>
+            <span class="text-white/20">|</span>
+            <span>XXL: <strong class="text-brand-gold-light">{{ sizes.XXL || 0 }}</strong></span>
           </div>
         </div>
 
         <!-- Thin Segmented Indicator with Bethel Colors -->
         <div class="w-full h-1.5 rounded-full bg-[#262626] flex overflow-hidden">
           <div
-            class="h-full bg-white/70 rounded-l-full transition-all duration-500"
-            :style="{ width: `${total ? (sizes.M / total) * 100 : 0}%` }"
-            :title="`Size M: ${sizes.M}`"
+            class="h-full bg-neutral-400 rounded-l-full transition-all duration-500"
+            :style="{ width: `${total ? ((sizes.S || 0) / total) * 100 : 0}%` }"
+            :title="`Size S: ${sizes.S || 0}`"
+          ></div>
+          <div
+            class="h-full bg-white/70 transition-all duration-500"
+            :style="{ width: `${total ? ((sizes.M || 0) / total) * 100 : 0}%` }"
+            :title="`Size M: ${sizes.M || 0}`"
           ></div>
           <div
             class="h-full bg-brand-gold transition-all duration-500"
-            :style="{ width: `${total ? (sizes.L / total) * 100 : 0}%` }"
-            :title="`Size L: ${sizes.L}`"
+            :style="{ width: `${total ? ((sizes.L || 0) / total) * 100 : 0}%` }"
+            :title="`Size L: ${sizes.L || 0}`"
           ></div>
           <div
-            class="h-full bg-brand-red rounded-r-full transition-all duration-500"
-            :style="{ width: `${total ? (sizes.XL / total) * 100 : 0}%` }"
-            :title="`Size XL: ${sizes.XL}`"
+            class="h-full bg-brand-red transition-all duration-500"
+            :style="{ width: `${total ? ((sizes.XL || 0) / total) * 100 : 0}%` }"
+            :title="`Size XL: ${sizes.XL || 0}`"
+          ></div>
+          <div
+            class="h-full bg-brand-gold-light rounded-r-full transition-all duration-500"
+            :style="{ width: `${total ? ((sizes.XXL || 0) / total) * 100 : 0}%` }"
+            :title="`Size XXL: ${sizes.XXL || 0}`"
           ></div>
         </div>
       </div>
@@ -146,7 +160,7 @@ defineProps({
   },
   sizes: {
     type: Object,
-    default: () => ({ M: 0, L: 0, XL: 0 })
+    default: () => ({ S: 0, M: 0, L: 0, XL: 0, XXL: 0 })
   }
 })
 </script>

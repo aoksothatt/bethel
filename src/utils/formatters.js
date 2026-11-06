@@ -1,4 +1,9 @@
 /**
+ * Supported jersey sizes for the squad.
+ */
+export const JERSEY_SIZES = ['S', 'M', 'L', 'XL', 'XXL'];
+
+/**
  * Format player jersey numbers consistently for display:
  * - 0 -> '0'
  * - 1 -> '1'

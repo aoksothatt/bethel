@@ -21,11 +21,10 @@ class PlayerController extends Controller
         $unpaid = $players->where('payment_status', 'unpaid')->count();
         $notConfirmed = $players->where('payment_status', 'not_confirmed')->count();
 
-        $sizes = [
-            'M' => $players->where('jersey_size', 'M')->count(),
-            'L' => $players->where('jersey_size', 'L')->count(),
-            'XL' => $players->where('jersey_size', 'XL')->count(),
-        ];
+        $sizes = [];
+        foreach (Player::SIZES as $size) {
+            $sizes[$size] = $players->where('jersey_size', $size)->count();
+        }
 
         return [
             'total' => $total,
@@ -88,7 +87,7 @@ class PlayerController extends Controller
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'shirt_number' => ['required', 'integer', 'min:0', 'max:999'],
-            'jersey_size' => ['required', Rule::in(['M', 'L', 'XL'])],
+            'jersey_size' => ['required', Rule::in(Player::SIZES)],
             'payment_status' => ['required', Rule::in(['paid', 'half_paid', 'unpaid', 'not_confirmed', 'Paid', '50% Paid', '50%_paid', 'half_paid', 'Unpaid', 'Not Confirmed'])],
             'notes' => ['nullable', 'string', 'max:1000'],
         ]);
@@ -124,7 +123,7 @@ class PlayerController extends Controller
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'shirt_number' => ['required', 'integer', 'min:0', 'max:999'],
-            'jersey_size' => ['required', Rule::in(['M', 'L', 'XL'])],
+            'jersey_size' => ['required', Rule::in(Player::SIZES)],
             'payment_status' => ['required', Rule::in(['paid', 'half_paid', 'unpaid', 'not_confirmed', 'Paid', '50% Paid', '50%_paid', 'half_paid', 'Unpaid', 'Not Confirmed'])],
             'notes' => ['nullable', 'string', 'max:1000'],
         ]);

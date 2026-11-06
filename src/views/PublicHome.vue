@@ -165,7 +165,7 @@ const stats = computed(() => {
       halfPaid: backendStats.value.half_paid ?? backendStats.value.halfPaid ?? 0,
       unpaid: backendStats.value.unpaid ?? 0,
       notConfirmed: backendStats.value.not_confirmed ?? backendStats.value.notConfirmed ?? 0,
-      sizes: backendStats.value.sizes ?? { M: 0, L: 0, XL: 0 }
+      sizes: backendStats.value.sizes ?? { S: 0, M: 0, L: 0, XL: 0, XXL: 0 }
     }
   }
 
@@ -174,7 +174,7 @@ const stats = computed(() => {
   let halfPaid = 0
   let unpaid = 0
   let notConfirmed = 0
-  const sizes = { M: 0, L: 0, XL: 0 }
+  const sizes = { S: 0, M: 0, L: 0, XL: 0, XXL: 0 }
 
   for (const player of players.value) {
     const s = normalizeStatus(player)
