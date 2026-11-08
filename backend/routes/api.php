@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\MaintenanceController;
 use App\Http\Controllers\PlayerController;
 use Illuminate\Support\Facades\Route;
 
@@ -45,4 +46,7 @@ Route::middleware('auth:sanctum')->prefix('admin')->group(function () {
     Route::put('/players/{id}', [PlayerController::class, 'update']);
     Route::patch('/players/{id}/payment', [PlayerController::class, 'updatePayment']);
     Route::delete('/players/{id}', [PlayerController::class, 'destroy']);
+
+    // TiDB Production Compatibility Diagnostic (Protected by auth:sanctum + Admin Email + Feature Flag)
+    Route::post('/maintenance/verify-tidb', [MaintenanceController::class, 'verifyTidb']);
 });
